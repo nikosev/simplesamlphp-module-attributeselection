@@ -1,0 +1,44 @@
+{
+	"yes": {
+		"en": "Yes, continue"
+	},
+	"no": {
+		"en": "No, cancel"
+	},
+	"attribute_selection_accept": {
+		"en": "SPNAME will be using the information below"
+	},
+	"attribute_selection_privacy_policy": {
+		"en": "Privacypolicy for the service"
+	},
+	"no_attribute_selection_title": {
+		"en": "Abort attribute selection"
+	},
+	"no_attribute_selection_text": {
+		"en": "You did not desire to select values for your attributes to SPNAME."
+	},
+	"no_attribute_selection_return": {
+		"en": "Return to attribute selection page"
+	},
+	"attribute_selection_header": {
+		"en": "Select the values of your attributes that are going to be released"
+	},
+	"attribute_selection_attributes_header": {
+		"en": "Information that will be sent to SPNAME"
+	},
+	"no_attribute_selection_goto_about": {
+		"en": "Go to information page for the service"
+	},
+	"attribute_selection_purpose": {
+		"en": "The purpose of SPNAME is SPDESC"
+	},
+	"table_caption": {
+		"en": "User information"
+	},
+	"table_summary": {
+		"en": "List the information about you that is about to be transmitted to the service you are going to login to"
+	},
+	"abort": {
+		"en": "Abort login to SPNAME"
+	}
+}
