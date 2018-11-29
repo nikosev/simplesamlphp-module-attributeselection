@@ -55,7 +55,6 @@ class sspmod_attributeselection_Auth_Process_AttributeSelection extends SimpleSA
      */
     public function process(&$state) {
         assert('is_array($state)');
-        assert('array_key_exists("attributeSelection", $state)');
         assert('array_key_exists("Destination", $state)');
         assert('array_key_exists("entityid", $state["Destination"])');
         assert('array_key_exists("metadata-set", $state["Destination"])');		
