@@ -29,9 +29,19 @@ Example:
 
     80 => array(
         'class' => 'attributeselection:AttributeSelection',
+        'intro' => 'Actual text goes here. This will be inserted between the head and the table with the attribute', // default to null
         'selectattributes' => array(
-            'eduPersonEntitlement' => 'check',
-            'eduPersonScopedAffiliation' => 'radio',
+            'eduPersonEntitlement' => array(
+                'mode' => 'check', // no default throw module config error
+                'description' => 'ekAtomoTitlos', // defaults to key
+                'regex' => '/\bgroup:/', // defaults to null
+            ),
+            'eduPersonScopedAffiliation' => array(
+                'mode' => 'radio',
+            ),
+            'schacHomeOrganization' => array(
+                'mode' => 'radio',
+            ),
         ),
     ),
 

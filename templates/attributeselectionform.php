@@ -67,10 +67,14 @@ $this->includeAtTemplateBase('includes/header.php');
 ?>
 <p>
 <?php
-echo $this->t('{attributeselection:attributeselection:attribute_selection_accept}', array(
-	'SPNAME' => $dstName,
-	'IDPNAME' => $srcName
-));
+if (!empty($this->data['intro'])) {
+	echo $this->data['intro'];
+} else {
+	echo $this->t('{attributeselection:attributeselection:attribute_selection_accept}', array(
+		'SPNAME' => $dstName,
+		'IDPNAME' => $srcName
+	));
+}
 
 if (array_key_exists('descr_purpose', $this->data['dstMetadata'])) {
 	echo '</p><p>' . $this->t('{attributeselection:attributeselection:attribute_selection_purpose}', array(
@@ -158,7 +162,11 @@ function present_attributes($t, $attributes, $selectattributes, $nameParent)
 
 	foreach($attributes as $name => $value) {
 		$nameraw = $name;
-		$name = $t->getAttributeTranslation($parentStr . $nameraw);
+		if (!empty($selectattributes[$nameraw]['description'])) {
+			$name = $selectattributes[$nameraw]['description'];
+		} else {
+			$name = $t->getAttributeTranslation($parentStr . $nameraw);
+		}
 		if (count($value) < 2) {
 			continue;
 		}
@@ -177,33 +185,30 @@ function present_attributes($t, $attributes, $selectattributes, $nameParent)
 			$str.= "\n" . '<tr class="' . $alternate[($i++ % 2) ] . '"><td><span class="attrname">' . htmlspecialchars($name) . '</span>';
 			$str.= '<div class="attrvalue" name="' . htmlspecialchars($nameraw) . '">';
 
-			if (sizeof($value) > 1) {
+			// we hawe several values
 
-				// we hawe several values
-
-				$str.= '<ul>';
+			$str.= '<ul>';
+			if ($nameraw == 'eduPersonEntitlement') {
 				foreach($value as $listitem) {
-					if ($nameraw === 'jpegPhoto') {
-						$str.= '<li><img src="data:image/jpeg;base64,' . htmlspecialchars($listitem) . '" alt="User photo" /></li>';
-					}
-					else {
-						$str.= '<li><input class="attribite-selection" type="' . ($selectattributes[$nameraw] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($listitem) . '</li>';
-					}
+					preg_match('/group:(.*)/', $listitem, $shorterValue);
+					$valueSplit = explode(':', $shorterValue[1]);
+					$groupName = $valueSplit[0];
+					preg_match('/role=(.*?)#/', $shorterValue[1], $groupMember);
+					$str.= '<li><div title="' . htmlspecialchars($listitem) . '"><input class="attribite-selection" type="' . ($selectattributes[$nameraw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($groupMember[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') : htmlspecialchars($groupName)) . '</div></li>';
 				}
-
-				$str.= '</ul>';
+			} elseif ($nameraw == 'schacHomeOrganization') {
+				foreach($value as $listitem) {
+					preg_match('/(.*)@/', $listitem, $realm);
+					preg_match('/@(.*)/', $listitem, $domain);
+					$str.= '<li><div title="' . htmlspecialchars($listitem) . '"><input class="attribite-selection" type="' . ($selectattributes[$nameraw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($realm[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:organisationmapping:' . htmlspecialchars($domain[1]) . '}') : htmlspecialchars($domain[1])) . '</div></li>';
+				}
+			} else {
+				foreach($value as $listitem) {
+					$str.= '<li><input class="attribite-selection" type="' . ($selectattributes[$nameraw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($listitem) . '</li>';
+				}
 			}
-			elseif (isset($value[0])) {
 
-				// we hawe only one value
-
-				if ($nameraw === 'jpegPhoto') {
-					$str.= '<img src="data:image/jpeg;base64,' . htmlspecialchars($value[0]) . '" alt="User photo" />';
-				}
-				else {
-					$str.= '<input class="attribite-selection" type="' . ($selectattributes[$nameraw] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($listitem);
-				}
-			} // end of if multivalue
+			$str.= '</ul>';
 			$str.= '</div>';
 
 			$str.= '</td></tr>';

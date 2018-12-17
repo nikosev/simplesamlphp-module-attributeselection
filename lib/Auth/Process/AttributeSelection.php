@@ -28,6 +28,10 @@ class sspmod_attributeselection_Auth_Process_AttributeSelection extends SimpleSA
             }
             $this->_selectattributes = $config['selectattributes'];
         }
+
+        if (array_key_exists('intro', $config)) {
+            $this->_intro = $config['intro'];
+        }
     }
     /**
      * Helper function to check whether attribute selection is disabled.
@@ -87,6 +91,7 @@ class sspmod_attributeselection_Auth_Process_AttributeSelection extends SimpleSA
             SimpleSAML_Stats::log('attributeselection:disabled', $statsData);
             return;
         }
+        $state['attributeselection:intro'] = $this->_intro;
         $state['attributeselection:selectattributes'] = $this->_selectattributes;
         // User interaction nessesary. Throw exception on isPassive request	
         if (isset($state['isPassive']) && $state['isPassive'] === true) {
@@ -108,57 +113,19 @@ class sspmod_attributeselection_Auth_Process_AttributeSelection extends SimpleSA
             SimpleSAML_Stats::log('attributeSelection:empty', $statsData);
             return;
         }
+        foreach ($state['attributeselection:selectattributes'] as $key => $value) {
+            if (!empty($value['regex'])) {
+                foreach ($userAttributes[$key] AS $valKey => $valValue) {
+                    if(!preg_match($value['regex'], $valValue)) {
+                        unset($userAttributes[$key][$valKey]);
+                    }
+                }
+            }
+        }
+        $state['Attributes'] = $userAttributes;
         // Save state and redirect
         $id  = SimpleSAML_Auth_State::saveState($state, 'attributeselection:request');
         $url = SimpleSAML_Module::getModuleURL('attributeselection/getattributeselection.php');
         \SimpleSAML\Utils\HTTP::redirectTrustedURL($url, array('StateId' => $id));
-    }
-    /**
-     * Generate a unique identifier of the user
-     * 
-     * @param string $userid The user id
-     * @param string $source The source id
-     *
-     * @return string SHA1 of the user id, source id and salt 
-     */
-    public static function getHashedUserID($userid, $source) {
-        return hash('sha1', $userid . '|' . SimpleSAML\Utils\Config::getSecretSalt() . '|' . $source);
-    }
-    /**
-     * Generate a unique targeted identifier
-     *
-     * @param string $userid      The user id
-     * @param string $source      The source id
-     * @param string $destination The destination id
-     *
-     * @return string SHA1 of the user id, source id, destination id and salt 
-     */
-    public static function getTargetedID($userid, $source, $destination) {
-        return hash('sha1', $userid . '|' . SimpleSAML\Utils\Config::getSecretSalt() . '|' . $source . '|' . $destination);
-    }
-    /**
-     * Generate unique identitier for attributes
-     *
-     * Create a hash value for the attributes that changes when attributes are
-     * added or removed. If the attribute values are included in the hash, the 
-     * hash will change if the values change.
-     *
-     * @param string $attributes    The attributes
-     * @param bool   $includeValues Whether or not to include the attribute
-     *                              value in the generation of the hash.
-     *
-     * @return string SHA1 of the user id, source id, destination id and salt 
-     */
-    public static function getAttributeHash($attributes, $includeValues = false) {
-        $hashBase = null;	
-        if ($includeValues) {
-            ksort($attributes);
-            $hashBase = serialize($attributes);
-        } else {
-            $names = array_keys($attributes);
-            sort($names);
-            $hashBase = implode('|', $names);
-        }
-        return hash('sha1', $hashBase);
     }
 }

@@ -19,7 +19,7 @@
  */
 session_cache_limiter('nocache');
 $globalConfig = SimpleSAML_Configuration::getInstance();
-SimpleSAML_Logger::info('AttributeSelection - attributeselection: Accessing attributes election interface');
+SimpleSAML_Logger::info('AttributeSelection - attributeselection: Accessing attribute selection interface');
 if (!array_key_exists('StateId', $_REQUEST)) {
     throw new SimpleSAML_Error_BadRequest(
         'Missing required StateId query parameter.'
@@ -64,6 +64,7 @@ $selectattributes = array_keys($selectattributes);
 foreach ($attributes AS $attrkey => $attrval) {
     if (!in_array($attrkey, $selectattributes)) {
         unset($attributes[$attrkey]);
+        continue;
     }
 }
 $para = array(
@@ -100,5 +101,11 @@ if (array_key_exists('attributeselection:selectattributes', $state)) {
     $t->data['selectattributes'] = $state['attributeselection:selectattributes'];
 } else {
     $t->data['selectattributes'] = array();
+}
+
+if (array_key_exists('attributeselection:intro', $state)) {
+    $t->data['intro'] = $state['attributeselection:intro'];
+} else {
+    $t->data['intro'] = array();
 }
 $t->show();
