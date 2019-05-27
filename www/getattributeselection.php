@@ -33,7 +33,7 @@ if (array_key_exists('attributeSelection', $_REQUEST)) {
         if (!empty($value)) {
             $currentAttributes = $state['Attributes'][$name];
             SimpleSAML\Logger::debug('AttributeSelection - attributeselection: currentAttributes=' . var_export($currentAttributes, true));
-            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: attributeSelection=' . var_export($valuesReseted, true));
+            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: attributeSelection=' . var_export($value, true));
             $state['Attributes'][$name] = array_values(array_intersect($currentAttributes, $value));
             SimpleSAML\Logger::debug('AttributeSelection - attributeselection: array_intersect=' . var_export(array_intersect($currentAttributes, $value), true));
         } else {
@@ -43,7 +43,7 @@ if (array_key_exists('attributeSelection', $_REQUEST)) {
 }
 if (array_key_exists('core:SP', $state)) {
     $spEntityId = $state['core:SP'];
-} else if (array_key_exists('saml:sp:State', $state)) {
+} elseif (array_key_exists('saml:sp:State', $state)) {
     $spEntityId = $state['saml:sp:State']['core:SP'];
 } else {
     $spEntityId = 'UNKNOWN';
