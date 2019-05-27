@@ -139,19 +139,20 @@ if ($this->data['sppp'] !== false) {
 
 function presentAttributes($t, $attributes, $selectAttributes, $nameParent)
 {
+	$translator = $t->getTranslator();
 	$alternate = [
 		'odd',
 		'even'
 	];
 	$i = 0;
-	$summary = 'summary="' . $t->t('{attributeselection:attributeselection:table_summary}') . '"';
+	$summary = 'summary="' . $translator->t('{attributeselection:attributeselection:table_summary}') . '"';
 	if (strlen($nameParent) > 0) {
 		$parentStr = strtolower($nameParent) . '_';
 		$str = '<table class="attributes" ' . $summary . '>';
 	} else {
 		$parentStr = '';
 		$str = '<table id="table_with_attributes"  class="attributes" ' . $summary . '>';
-		$str .= "\n" . '<caption>' . $t->t('{attributeselection:attributeselection:table_caption}') . '</caption>';
+		$str .= "\n" . '<caption>' . $translator->t('{attributeselection:attributeselection:table_caption}') . '</caption>';
 	}
 
 	foreach ($attributes as $name => $value) {
@@ -159,7 +160,7 @@ function presentAttributes($t, $attributes, $selectAttributes, $nameParent)
 		if (!empty($selectAttributes[$nameRaw]['description'])) {
 			$name = $selectAttributes[$nameRaw]['description'];
 		} else {
-			$name = $t->getAttributeTranslation($parentStr . $nameRaw);
+			$name = $translator->getAttributeTranslation($parentStr . $nameRaw);
 		}
 		if (count($value) < 2) {
 			continue;
@@ -188,13 +189,13 @@ function presentAttributes($t, $attributes, $selectAttributes, $nameParent)
 					$valueSplit = explode(':', $shorterValue[1]);
 					$groupName = $valueSplit[0];
 					preg_match('/role=(.*?)#/', $shorterValue[1], $groupMember);
-					$str .= '<li><div title="' . htmlspecialchars($listItem) . '"><input class="attribite-selection" type="' . ($selectAttributes[$nameRaw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameRaw) . '" value="'  . htmlspecialchars($listItem) .  '" /> ' . htmlspecialchars($groupMember[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') : htmlspecialchars($groupName)) . '</div></li>';
+					$str .= '<li><div title="' . htmlspecialchars($listItem) . '"><input class="attribite-selection" type="' . ($selectAttributes[$nameRaw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameRaw) . '" value="'  . htmlspecialchars($listItem) .  '" /> ' . htmlspecialchars($groupMember[1]) . ' at ' . ($translator->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $translator->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') : htmlspecialchars($groupName)) . '</div></li>';
 				}
 			} elseif ($nameRaw == 'schacHomeOrganization') {
 				foreach ($value as $listItem) {
 					preg_match('/(.*)@/', $listItem, $realm);
 					preg_match('/@(.*)/', $listItem, $domain);
-					$str .= '<li><div title="' . htmlspecialchars($listItem) . '"><input class="attribite-selection" type="' . ($selectAttributes[$nameRaw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameRaw) . '" value="'  . htmlspecialchars($listItem) .  '" /> ' . htmlspecialchars($realm[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:organisationmapping:' . htmlspecialchars($domain[1]) . '}') : htmlspecialchars($domain[1])) . '</div></li>';
+					$str .= '<li><div title="' . htmlspecialchars($listItem) . '"><input class="attribite-selection" type="' . ($selectAttributes[$nameRaw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameRaw) . '" value="'  . htmlspecialchars($listItem) .  '" /> ' . htmlspecialchars($realm[1]) . ' at ' . ($translator->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $translator->t('{attributeselection:organisationmapping:' . htmlspecialchars($domain[1]) . '}') : htmlspecialchars($domain[1])) . '</div></li>';
 				}
 			} else {
 				foreach ($value as $listItem) {
