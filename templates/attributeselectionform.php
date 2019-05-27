@@ -56,7 +56,7 @@ if (is_array($dstName)) {
 $srcName = htmlspecialchars($srcName);
 $dstName = htmlspecialchars($dstName);
 $attributes = $this->data['attributes'];
-$selectattributes = $this->data['selectattributes'];
+$selectAttributes = $this->data['selectattributes'];
 $this->data['header'] = $this->t('{attributeselection:attributeselection:attribute_selection_header}');
 $this->data['head'] = '<link rel="stylesheet" type="text/css" href="/' . $this->data['baseurlpath'] . 'module.php/attributeselection/resources/css/style.css" />' . "\n";
 $this->includeAtTemplateBase('includes/header.php');
@@ -137,7 +137,7 @@ if ($this->data['sppp'] !== false) {
  * @return string HTML representation of the attributes
  */
 
-function present_attributes($t, $attributes, $selectattributes, $nameParent)
+function presentAttributes($t, $attributes, $selectAttributes, $nameParent)
 {
 	$alternate = [
 		'odd',
@@ -155,50 +155,50 @@ function present_attributes($t, $attributes, $selectattributes, $nameParent)
 	}
 
 	foreach ($attributes as $name => $value) {
-		$nameraw = $name;
-		if (!empty($selectattributes[$nameraw]['description'])) {
-			$name = $selectattributes[$nameraw]['description'];
+		$nameRaw = $name;
+		if (!empty($selectAttributes[$nameRaw]['description'])) {
+			$name = $selectAttributes[$nameRaw]['description'];
 		} else {
-			$name = $t->getAttributeTranslation($parentStr . $nameraw);
+			$name = $t->getAttributeTranslation($parentStr . $nameRaw);
 		}
 		if (count($value) < 2) {
 			continue;
 		}
-		if (preg_match('/^child_/', $nameraw)) {
+		if (preg_match('/^child_/', $nameRaw)) {
 
 			// insert child table
 
-			$parentName = preg_replace('/^child_/', '', $nameraw);
+			$parentName = preg_replace('/^child_/', '', $nameRaw);
 			foreach ($value as $child) {
-				$str .= "\n" . '<tr class="odd"><td style="padding: 2em">' . present_attributes($t, $child, $selectattributes, $parentName) . '</td></tr>';
+				$str .= "\n" . '<tr class="odd"><td style="padding: 2em">' . presentAttributes($t, $child, $selectAttributes, $parentName) . '</td></tr>';
 			}
 		} else {
 
 			// insert values directly
 
 			$str .= "\n" . '<tr class="' . $alternate[($i++ % 2)] . '"><td><span class="attrname">' . htmlspecialchars($name) . '</span>';
-			$str .= '<div class="attrvalue" name="' . htmlspecialchars($nameraw) . '">';
+			$str .= '<div class="attrvalue" name="' . htmlspecialchars($nameRaw) . '">';
 
 			// we hawe several values
 
 			$str .= '<ul>';
-			if ($nameraw == 'eduPersonEntitlement') {
-				foreach ($value as $listitem) {
-					preg_match('/group:(.*)/', $listitem, $shorterValue);
+			if ($nameRaw == 'eduPersonEntitlement') {
+				foreach ($value as $listItem) {
+					preg_match('/group:(.*)/', $listItem, $shorterValue);
 					$valueSplit = explode(':', $shorterValue[1]);
 					$groupName = $valueSplit[0];
 					preg_match('/role=(.*?)#/', $shorterValue[1], $groupMember);
-					$str .= '<li><div title="' . htmlspecialchars($listitem) . '"><input class="attribite-selection" type="' . ($selectattributes[$nameraw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($groupMember[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') : htmlspecialchars($groupName)) . '</div></li>';
+					$str .= '<li><div title="' . htmlspecialchars($listItem) . '"><input class="attribite-selection" type="' . ($selectAttributes[$nameRaw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameRaw) . '" value="'  . htmlspecialchars($listItem) .  '" /> ' . htmlspecialchars($groupMember[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') : htmlspecialchars($groupName)) . '</div></li>';
 				}
-			} elseif ($nameraw == 'schacHomeOrganization') {
-				foreach ($value as $listitem) {
-					preg_match('/(.*)@/', $listitem, $realm);
-					preg_match('/@(.*)/', $listitem, $domain);
-					$str .= '<li><div title="' . htmlspecialchars($listitem) . '"><input class="attribite-selection" type="' . ($selectattributes[$nameraw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($realm[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:organisationmapping:' . htmlspecialchars($domain[1]) . '}') : htmlspecialchars($domain[1])) . '</div></li>';
+			} elseif ($nameRaw == 'schacHomeOrganization') {
+				foreach ($value as $listItem) {
+					preg_match('/(.*)@/', $listItem, $realm);
+					preg_match('/@(.*)/', $listItem, $domain);
+					$str .= '<li><div title="' . htmlspecialchars($listItem) . '"><input class="attribite-selection" type="' . ($selectAttributes[$nameRaw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameRaw) . '" value="'  . htmlspecialchars($listItem) .  '" /> ' . htmlspecialchars($realm[1]) . ' at ' . ($t->t('{attributeselection:entitlementmapping:' . htmlspecialchars($groupName) . '}') != NULL ? $t->t('{attributeselection:organisationmapping:' . htmlspecialchars($domain[1]) . '}') : htmlspecialchars($domain[1])) . '</div></li>';
 				}
 			} else {
-				foreach ($value as $listitem) {
-					$str .= '<li><input class="attribite-selection" type="' . ($selectattributes[$nameraw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameraw) . '" value="'  . htmlspecialchars($listitem) .  '" /> ' . htmlspecialchars($listitem) . '</li>';
+				foreach ($value as $listItem) {
+					$str .= '<li><input class="attribite-selection" type="' . ($selectAttributes[$nameRaw]['mode'] == 'check' ? 'checkbox' : 'radio') . '" name="' . htmlspecialchars($nameRaw) . '" value="'  . htmlspecialchars($listItem) .  '" /> ' . htmlspecialchars($listItem) . '</li>';
 				}
 			}
 
@@ -216,7 +216,7 @@ echo '<h3 id="attributeheader">' . $this->t('{attributeselection:attributeselect
 	'SPNAME' => $dstName,
 	'IDPNAME' => $srcName
 ]) . '</h3>';
-echo present_attributes($this, $attributes, $selectattributes, '');
+echo presentAttributes($this, $attributes, $selectAttributes, '');
 echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/jquery-3.3.1.slim.min.js')) . "\"></script>";
 echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/attributeselector.js')) . "\"></script>";
 $this->includeAtTemplateBase('includes/footer.php');

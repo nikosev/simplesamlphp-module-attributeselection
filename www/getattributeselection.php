@@ -42,11 +42,11 @@ if (array_key_exists('attributeSelection', $_REQUEST)) {
     }
 }
 if (array_key_exists('core:SP', $state)) {
-    $spentityid = $state['core:SP'];
+    $spEntityId = $state['core:SP'];
 } else if (array_key_exists('saml:sp:State', $state)) {
-    $spentityid = $state['saml:sp:State']['core:SP'];
+    $spEntityId = $state['saml:sp:State']['core:SP'];
 } else {
-    $spentityid = 'UNKNOWN';
+    $spEntityId = 'UNKNOWN';
 }
 // The user has pressed the yes-button
 if (array_key_exists('yes', $_REQUEST)) {
@@ -58,12 +58,12 @@ if (array_key_exists('yes', $_REQUEST)) {
 }
 // Prepare attributes for presentation
 $attributes = $state['Attributes'];
-$selectattributes = $state['attributeselection:selectattributes'];
-$selectattributes = array_keys($selectattributes);
+$selectAttributes = $state['attributeselection:selectattributes'];
+$selectAttributes = array_keys($selectAttributes);
 // Remove attributes that are not required to select value(s)
-foreach ($attributes as $attrkey => $attrval) {
-    if (!in_array($attrkey, $selectattributes)) {
-        unset($attributes[$attrkey]);
+foreach ($attributes as $attrKey => $attrVal) {
+    if (!in_array($attrKey, $selectAttributes)) {
+        unset($attributes[$attrKey]);
         continue;
     }
 }
@@ -83,20 +83,20 @@ $t->data['noData'] = ['StateId' => $id];
 $t->data['attributes'] = $attributes;
 // Fetch privacypolicy
 if (array_key_exists('privacypolicy', $state['Destination'])) {
-    $privacypolicy = $state['Destination']['privacypolicy'];
+    $privacyPolicy = $state['Destination']['privacypolicy'];
 } elseif (array_key_exists('privacypolicy', $state['Source'])) {
-    $privacypolicy = $state['Source']['privacypolicy'];
+    $privacyPolicy = $state['Source']['privacypolicy'];
 } else {
-    $privacypolicy = false;
+    $privacyPolicy = false;
 }
-if ($privacypolicy !== false) {
-    $privacypolicy = str_replace(
+if ($privacyPolicy !== false) {
+    $privacyPolicy = str_replace(
         '%SPENTITYID%',
-        urlencode($spentityid),
-        $privacypolicy
+        urlencode($spEntityId),
+        $privacyPolicy
     );
 }
-$t->data['sppp'] = $privacypolicy;
+$t->data['sppp'] = $privacyPolicy;
 if (array_key_exists('attributeselection:selectattributes', $state)) {
     $t->data['selectattributes'] = $state['attributeselection:selectattributes'];
 } else {
