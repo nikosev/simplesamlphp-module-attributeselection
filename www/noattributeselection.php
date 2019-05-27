@@ -15,17 +15,17 @@ $state = SimpleSAML\Auth\State::loadState($id, 'attributeselection:request');
 
 $resumeFrom = SimpleSAML\Module::getModuleURL(
     'attributeselection/getattributeselection.php',
-    array('StateId' => $id)
+    ['StateId' => $id]
 );
 
 $logoutLink = SimpleSAML\Module::getModuleURL(
     'attributeselection/logout.php',
-    array('StateId' => $id)
+    ['StateId' => $id]
 );
 
 $aboutService = null;
 
-$statsInfo = array();
+$statsInfo = [];
 if (isset($state['Destination']['entityid'])) {
     $statsInfo['spEntityID'] = $state['Destination']['entityid'];
 }

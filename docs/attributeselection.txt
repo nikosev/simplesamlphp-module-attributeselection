@@ -27,23 +27,23 @@ The simplest way to setup the attribute selection module is:
 
 Example:
 
-    80 => array(
+    80 => [
         'class' => 'attributeselection:AttributeSelection',
         'intro' => 'Actual text goes here. This will be inserted between the head and the table with the attribute', // default to null
-        'selectattributes' => array(
-            'eduPersonEntitlement' => array(
+        'selectattributes' => [
+            'eduPersonEntitlement' => [
                 'mode' => 'check', // no default throw module config error
                 'description' => 'ekAtomoTitlos', // defaults to key
                 'regex' => '/\bgroup:/', // defaults to null
-            ),
-            'eduPersonScopedAffiliation' => array(
+            ],
+            'eduPersonScopedAffiliation' => [
                 'mode' => 'radio',
-            ),
-            'schacHomeOrganization' => array(
+            ],
+            'schacHomeOrganization' => [
                 'mode' => 'radio',
-            ),
-        ),
-    ),
+            ],
+        ],
+    ],
 
 Options
 -------
@@ -94,38 +94,38 @@ more IdPs for a given SP, add the `attributeselection.disable`-option to the SP 
 
 Disable attribute selection for a given IdP:
 
-    $metadata['https://idp.example.org/'] = array(
+    $metadata['https://idp.example.org/'] = [
         [...],
         'attributeselection.disable' => TRUE,
-    );
+    ];
 
 Disable attribute selection for some SPs connected to a given IdP:
 
-    $metadata['https://idp.example.org/'] = array(
+    $metadata['https://idp.example.org/'] = [
         [...],
-        'attributeselection.disable' => array(
+        'attributeselection.disable' => [
             'https://sp1.example.org/',
             'https://sp2.example.org/',
-        ),
-    );
+        ],
+    ];
 
 
 Disable attribute selection for a given SP:
 
-    $metadata['https://sp.example.org'] = array(
+    $metadata['https://sp.example.org'] = [
         [...]
         'attributeselection.disable' => TRUE,
-    ),
+    ],
 
 Disable attribute selection for some IdPs for a given SP:
 
-    $metadata['https://sp.example.org'] = array(
+    $metadata['https://sp.example.org'] = [
         [...]
-        'attributeselection.disable' => array(
+        'attributeselection.disable' => [
             'https://idp1.example.org/',
             'https://idp2.example.org/',
-        ),
-    ),
+        ],
+    ],
 
 
 Attribute presentation

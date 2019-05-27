@@ -94,7 +94,7 @@ class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter
             $idpMeta         = $metadata->getMetaData($idpEntityId, 'saml20-idp-remote');
             $state['Source'] = $idpMeta;
         }
-        $statsData = array('spEntityID' => $spEntityId);
+        $statsData = ['spEntityID' => $spEntityId];
         // Do not use attribute selection if disabled
         if (isset($state['Source']['attributeselection.disable']) && self::checkDisable($state['Source']['attributeselection.disable'], $spEntityId)) {
             Logger::debug('AttributeSelection: AttributeSelection disabled for entity ' . $spEntityId . ' with IdP ' . $idpEntityId);
@@ -141,6 +141,6 @@ class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter
         // Save state and redirect
         $id  = State::saveState($state, 'attributeselection:request');
         $url = Module::getModuleURL('attributeselection/getattributeselection.php');
-        HTTP::redirectTrustedURL($url, array('StateId' => $id));
+        HTTP::redirectTrustedURL($url, ['StateId' => $id]);
     }
 }

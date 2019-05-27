@@ -67,9 +67,9 @@ foreach ($attributes as $attrkey => $attrval) {
         continue;
     }
 }
-$para = array(
+$para = [
     'attributes' => &$attributes
-);
+];
 // Reorder attributes according to attributepresentation hooks
 SimpleSAML\Module::callHooks('attributepresentation', $para);
 // Make, populate and layout attribute selection form
@@ -77,9 +77,9 @@ $t = new SimpleSAML\XHTML\Template($globalConfig, 'attributeselection:attributes
 $t->data['srcMetadata'] = $state['Source'];
 $t->data['dstMetadata'] = $state['Destination'];
 $t->data['yesTarget'] = SimpleSAML\Module::getModuleURL('attributeselection/getattributeselection.php');
-$t->data['yesData'] = array('StateId' => $id);
+$t->data['yesData'] = ['StateId' => $id];
 $t->data['noTarget'] = SimpleSAML\Module::getModuleURL('attributeselection/noattributeselection.php');
-$t->data['noData'] = array('StateId' => $id);
+$t->data['noData'] = ['StateId' => $id];
 $t->data['attributes'] = $attributes;
 // Fetch privacypolicy
 if (array_key_exists('privacypolicy', $state['Destination'])) {
@@ -100,12 +100,12 @@ $t->data['sppp'] = $privacypolicy;
 if (array_key_exists('attributeselection:selectattributes', $state)) {
     $t->data['selectattributes'] = $state['attributeselection:selectattributes'];
 } else {
-    $t->data['selectattributes'] = array();
+    $t->data['selectattributes'] = [];
 }
 
 if (array_key_exists('attributeselection:intro', $state)) {
     $t->data['intro'] = $state['attributeselection:intro'];
 } else {
-    $t->data['intro'] = array();
+    $t->data['intro'] = [];
 }
 $t->show();

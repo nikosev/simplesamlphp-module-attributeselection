@@ -18,7 +18,7 @@ $this->data['header'] = $this->t('{attributeselection:attributeselection:no_attr
 $this->includeAtTemplateBase('includes/header.php');
 
 echo '<h2>' . $this->data['header'] . '</h2>';
-echo '<p>' . $this->t('{attributeselection:attributeselection:no_attribute_selection_text}', array('SPNAME' => $dstName)) . '</p>';
+echo '<p>' . $this->t('{attributeselection:attributeselection:no_attribute_selection_text}', ['SPNAME' => $dstName]) . '</p>';
 
 if ($this->data['resumeFrom']) {
     echo ('<p><a href="' . htmlspecialchars($this->data['resumeFrom']) . '">');
@@ -32,7 +32,7 @@ if ($this->data['aboutService']) {
     echo ('</a></p>');
 }
 
-echo ('<p><a href="' . htmlspecialchars($this->data['logoutLink']) . '">' . $this->t('{attributeselection:attributeselection:abort}', array('SPNAME' => $dstName)) . '</a></p>');
+echo ('<p><a href="' . htmlspecialchars($this->data['logoutLink']) . '">' . $this->t('{attributeselection:attributeselection:abort}', ['SPNAME' => $dstName]) . '</a></p>');
 
 
 $this->includeAtTemplateBase('includes/footer.php');

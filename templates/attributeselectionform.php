@@ -66,17 +66,17 @@ $this->includeAtTemplateBase('includes/header.php');
 	if (!empty($this->data['intro'])) {
 		echo $this->data['intro'];
 	} else {
-		echo $this->t('{attributeselection:attributeselection:attribute_selection_accept}', array(
+		echo $this->t('{attributeselection:attributeselection:attribute_selection_accept}', [
 			'SPNAME' => $dstName,
 			'IDPNAME' => $srcName
-		));
+		]);
 	}
 
 	if (array_key_exists('descr_purpose', $this->data['dstMetadata'])) {
-		echo '</p><p>' . $this->t('{attributeselection:attributeselection:attribute_selection_purpose}', array(
+		echo '</p><p>' . $this->t('{attributeselection:attributeselection:attribute_selection_purpose}', [
 			'SPNAME' => $dstName,
 			'SPDESC' => $this->getTranslation(SimpleSAMLUtilsArrays::arrayize($this->data['dstMetadata']['descr_purpose'], 'en')),
-		));
+		]);
 	}
 
 	?>
@@ -139,10 +139,10 @@ if ($this->data['sppp'] !== false) {
 
 function present_attributes($t, $attributes, $selectattributes, $nameParent)
 {
-	$alternate = array(
+	$alternate = [
 		'odd',
 		'even'
-	);
+	];
 	$i = 0;
 	$summary = 'summary="' . $t->t('{attributeselection:attributeselection:table_summary}') . '"';
 	if (strlen($nameParent) > 0) {
@@ -212,10 +212,10 @@ function present_attributes($t, $attributes, $selectattributes, $nameParent)
 	return $str;
 }
 
-echo '<h3 id="attributeheader">' . $this->t('{attributeselection:attributeselection:attribute_selection_attributes_header}', array(
+echo '<h3 id="attributeheader">' . $this->t('{attributeselection:attributeselection:attribute_selection_attributes_header}', [
 	'SPNAME' => $dstName,
 	'IDPNAME' => $srcName
-)) . '</h3>';
+]) . '</h3>';
 echo present_attributes($this, $attributes, $selectattributes, '');
 echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/jquery-3.3.1.slim.min.js')) . "\"></script>";
 echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/attributeselector.js')) . "\"></script>";
