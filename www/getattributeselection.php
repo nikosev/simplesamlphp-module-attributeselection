@@ -1,11 +1,21 @@
 <?php
+
+use SimpleSAML\Configuration;
+use SimpleSAML\Logger;
+use SimpleSAML\Error\BadRequest;
+use SimpleSAML\Auth\State;
+use SimpleSAML\Stats;
+use SimpleSAML\Auth\ProcessingChain;
+use SimpleSAML\Module;
+use SimpleSAML\XHTML\Template;
+
 /**
  * Attribute selection script
  *
  * This script displays a page to the user, which requests that the user
  * authorizes the release of attributes.
  *
- * @package SimpleSAMLphp
+ * @package \SimpleSAMLphp
  */
 /**
  * Explicit instruct attribute selection page to send no-cache header to browsers to make 
@@ -18,24 +28,24 @@
  * so this is just to make sure.
  */
 session_cache_limiter('nocache');
-$globalConfig = SimpleSAML\Configuration::getInstance();
-SimpleSAML\Logger::info('AttributeSelection - attributeselection: Accessing attribute selection interface');
+$globalConfig = Configuration::getInstance();
+Logger::info('AttributeSelection - attributeselection: Accessing attribute selection interface');
 if (!array_key_exists('StateId', $_REQUEST)) {
-    throw new SimpleSAML\Error\BadRequest(
+    throw new BadRequest(
         'Missing required StateId query parameter.'
     );
 }
 $id = $_REQUEST['StateId'];
-$state = SimpleSAML\Auth\State::loadState($id, 'attributeselection:request');
+$state = State::loadState($id, 'attributeselection:request');
 if (array_key_exists('attributeSelection', $_REQUEST)) {
     $userData = json_decode($_REQUEST['attributeSelection'], true);
     foreach ($userData as $name => $value) {
         if (!empty($value)) {
             $currentAttributes = $state['Attributes'][$name];
-            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: currentAttributes=' . var_export($currentAttributes, true));
-            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: attributeSelection=' . var_export($value, true));
+            Logger::debug('AttributeSelection - attributeselection: currentAttributes=' . var_export($currentAttributes, true));
+            Logger::debug('AttributeSelection - attributeselection: attributeSelection=' . var_export($value, true));
             $state['Attributes'][$name] = array_values(array_intersect($currentAttributes, $value));
-            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: array_intersect=' . var_export(array_intersect($currentAttributes, $value), true));
+            Logger::debug('AttributeSelection - attributeselection: array_intersect=' . var_export(array_intersect($currentAttributes, $value), true));
         } else {
             unset($state['Attributes'][$name]);
         }
@@ -53,8 +63,8 @@ if (array_key_exists('yes', $_REQUEST)) {
     if (isset($state['Destination']['entityid'])) {
         $statsInfo['spEntityID'] = $state['Destination']['entityid'];
     }
-    SimpleSAML\Stats::log('attributeSelection:accept', $statsInfo);
-    SimpleSAML\Auth\ProcessingChain::resumeProcessing($state);
+    Stats::log('attributeSelection:accept', $statsInfo);
+    ProcessingChain::resumeProcessing($state);
 }
 // Prepare attributes for presentation
 $attributes = $state['Attributes'];
@@ -71,14 +81,14 @@ $para = [
     'attributes' => &$attributes
 ];
 // Reorder attributes according to attributepresentation hooks
-SimpleSAML\Module::callHooks('attributepresentation', $para);
+Module::callHooks('attributepresentation', $para);
 // Make, populate and layout attribute selection form
-$t = new SimpleSAML\XHTML\Template($globalConfig, 'attributeselection:attributeselectionform.php');
+$t = new Template($globalConfig, 'attributeselection:attributeselectionform.php');
 $t->data['srcMetadata'] = $state['Source'];
 $t->data['dstMetadata'] = $state['Destination'];
-$t->data['yesTarget'] = SimpleSAML\Module::getModuleURL('attributeselection/getattributeselection.php');
+$t->data['yesTarget'] = Module::getModuleURL('attributeselection/getattributeselection.php');
 $t->data['yesData'] = ['StateId' => $id];
-$t->data['noTarget'] = SimpleSAML\Module::getModuleURL('attributeselection/noattributeselection.php');
+$t->data['noTarget'] = Module::getModuleURL('attributeselection/noattributeselection.php');
 $t->data['noData'] = ['StateId' => $id];
 $t->data['attributes'] = $attributes;
 // Fetch privacypolicy

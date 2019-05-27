@@ -1,24 +1,32 @@
 <?php
+
+use SimpleSAML\Auth\State;
+use SimpleSAML\Configuration;
+use SimpleSAML\Error\BadRequest;
+use SimpleSAML\Module;
+use SimpleSAML\Stats;
+use SimpleSAML\XHTML\Template;
+
 /**
  * This is the page the user lands on when choosing "no" in the attribute selection form.
  *
  * @package SimpleSAMLphp
  */
 if (!array_key_exists('StateId', $_REQUEST)) {
-    throw new SimpleSAML\Error\BadRequest(
+    throw new BadRequest(
         'Missing required StateId query parameter.'
     );
 }
 
 $id = $_REQUEST['StateId'];
-$state = SimpleSAML\Auth\State::loadState($id, 'attributeselection:request');
+$state = State::loadState($id, 'attributeselection:request');
 
-$resumeFrom = SimpleSAML\Module::getModuleURL(
+$resumeFrom = Module::getModuleURL(
     'attributeselection/getattributeselection.php',
     ['StateId' => $id]
 );
 
-$logoutLink = SimpleSAML\Module::getModuleURL(
+$logoutLink = Module::getModuleURL(
     'attributeselection/logout.php',
     ['StateId' => $id]
 );
@@ -29,11 +37,11 @@ $statsInfo = [];
 if (isset($state['Destination']['entityid'])) {
     $statsInfo['spEntityID'] = $state['Destination']['entityid'];
 }
-SimpleSAML\Stats::log('attributeselection:reject', $statsInfo);
+Stats::log('attributeselection:reject', $statsInfo);
 
-$globalConfig = SimpleSAML\Configuration::getInstance();
+$globalConfig = Configuration::getInstance();
 
-$t = new SimpleSAML\XHTML\Template($globalConfig, 'attributeselection:noattributeselection.php');
+$t = new Template($globalConfig, 'attributeselection:noattributeselection.php');
 $t->data['dstMetadata'] = $state['Destination'];
 $t->data['resumeFrom'] = $resumeFrom;
 $t->data['aboutService'] = $aboutService;

@@ -1,4 +1,7 @@
 <?php
+
+use SimpleSAML\Module;
+
 /**
  * Template form for attribute selection.
  *
@@ -218,6 +221,6 @@ echo '<h3 id="attributeheader">' . $this->t('{attributeselection:attributeselect
 	'IDPNAME' => $srcName
 ]) . '</h3>';
 echo presentAttributes($this, $attributes, $selectAttributes, '');
-echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/jquery-3.3.1.slim.min.js')) . "\"></script>";
-echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/attributeselector.js')) . "\"></script>";
+echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(Module::getModuleURL('attributeselection/resources/js/jquery-3.3.1.slim.min.js')) . "\"></script>";
+echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(Module::getModuleURL('attributeselection/resources/js/attributeselector.js')) . "\"></script>";
 $this->includeAtTemplateBase('includes/footer.php');
