@@ -1,4 +1,7 @@
 <?php
+
+namespace SimpleSAML\Module\attributeselection\Auth\Process;
+
 /**
  * Attribute Selection Processing filter
  *
@@ -7,7 +10,7 @@
  *
  * @package SimpleSAMLphp
  */
-class sspmod_attributeselection_Auth_Process_AttributeSelection extends SimpleSAML_Auth_ProcessingFilter {
+class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter {
     /**
      * Initialize attribute selection filter
      *
