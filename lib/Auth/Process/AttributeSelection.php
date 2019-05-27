@@ -2,6 +2,14 @@
 
 namespace SimpleSAML\Module\attributeselection\Auth\Process;
 
+use SimpleSAML\Auth\State;
+use SimpleSAML\Error;
+use SimpleSAML\Logger;
+use SimpleSAML\Metadata\MetaDataStorageHandler;
+use SimpleSAML\Module;
+use SimpleSAML\Stats;
+use SimpleSAML\Utils\HTTP;
+
 /**
  * Attribute Selection Processing filter
  *
@@ -24,7 +32,7 @@ class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter {
         parent::__construct($config, $reserved);
         if (array_key_exists('selectattributes', $config)) {
             if (!is_array($config['selectattributes'])) {
-                throw new SimpleSAML_Error_Exception(
+                throw new Error\Exception(
                     'AttributeSelection: selectattributes must be an array. ' .
                     var_export($config['selectattributes'], true) . ' given.'
                 );
@@ -70,7 +78,7 @@ class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter {
         $spEntityId = $state['Destination']['entityid'];
         $idpEntityId = $state['Source']['entityid'];
         $userAttributes = $state['Attributes'];
-        $metadata = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+        $metadata = MetaDataStorageHandler::getMetadataHandler();
         /**
          * If the attribute selection module is active on a bridge $state['saml:sp:IdP']
          * will contain an entry id for the remote IdP. If not, then the
@@ -85,21 +93,21 @@ class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter {
         $statsData = array('spEntityID' => $spEntityId);
         // Do not use attribute selection if disabled
         if (isset($state['Source']['attributeselection.disable']) && self::checkDisable($state['Source']['attributeselection.disable'], $spEntityId)) {
-            SimpleSAML_Logger::debug('AttributeSelection: AttributeSelection disabled for entity ' . $spEntityId . ' with IdP ' . $idpEntityId);
-            SimpleSAML_Stats::log('attributeselection:disabled', $statsData);
+            Logger::debug('AttributeSelection: AttributeSelection disabled for entity ' . $spEntityId . ' with IdP ' . $idpEntityId);
+            Stats::log('attributeselection:disabled', $statsData);
             return;
         }
         if (isset($state['Destination']['attributeselection.disable']) && self::checkDisable($state['Destination']['attributeselection.disable'], $idpEntityId)) {
-            SimpleSAML_Logger::debug('AttributeSelection: AttributeSelection disabled for entity ' . $spEntityId . ' with IdP ' . $idpEntityId);
-            SimpleSAML_Stats::log('attributeselection:disabled', $statsData);
+            Logger::debug('AttributeSelection: AttributeSelection disabled for entity ' . $spEntityId . ' with IdP ' . $idpEntityId);
+            Stats::log('attributeselection:disabled', $statsData);
             return;
         }
         $state['attributeselection:intro'] = $this->_intro;
         $state['attributeselection:selectattributes'] = $this->_selectattributes;
         // User interaction nessesary. Throw exception on isPassive request	
         if (isset($state['isPassive']) && $state['isPassive'] === true) {
-            SimpleSAML_Stats::log('attributeselection:nopassive', $statsData);
-            throw new SimpleSAML_Error_NoPassive(
+            Stats::log('attributeselection:nopassive', $statsData);
+            throw new Error\NoPassive(
                 'Unable to give attribute selection on passive request.'
             );
         }
@@ -112,8 +120,8 @@ class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter {
             }
         }
         if (!$hasValues) {
-            SimpleSAML_Logger::debug('AttributeSelection: User doesn\'t have the required attributes for attribute selection');
-            SimpleSAML_Stats::log('attributeSelection:empty', $statsData);
+            Logger::debug('AttributeSelection: User doesn\'t have the required attributes for attribute selection');
+            Stats::log('attributeSelection:empty', $statsData);
             return;
         }
         foreach ($state['attributeselection:selectattributes'] as $key => $value) {
@@ -127,8 +135,8 @@ class AttributeSelection extends \SimpleSAML\Auth\ProcessingFilter {
         }
         $state['Attributes'] = $userAttributes;
         // Save state and redirect
-        $id  = SimpleSAML_Auth_State::saveState($state, 'attributeselection:request');
-        $url = SimpleSAML_Module::getModuleURL('attributeselection/getattributeselection.php');
-        \SimpleSAML\Utils\HTTP::redirectTrustedURL($url, array('StateId' => $id));
+        $id  = State::saveState($state, 'attributeselection:request');
+        $url = Module::getModuleURL('attributeselection/getattributeselection.php');
+        HTTP::redirectTrustedURL($url, array('StateId' => $id));
     }
 }

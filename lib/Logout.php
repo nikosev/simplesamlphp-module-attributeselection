@@ -2,6 +2,9 @@
 
 namespace SimpleSAML\Module\attributeselection;
 
+use SimpleSAML\Module;
+use SimpleSAML\Utils\HTTP;
+
 /**
  * Class defining the logout completed handler for the attribute selection page.
  *
@@ -10,8 +13,8 @@ namespace SimpleSAML\Module\attributeselection;
 class Logout {
 
 	public static function postLogout(SimpleSAML_IdP $idp, array $state) {
-		$url = SimpleSAML_Module::getModuleURL('attributeselection/logout_completed.php');
-		\SimpleSAML\Utils\HTTP::redirectTrustedURL($url);
+		$url = Module::getModuleURL('attributeselection/logout_completed.php');
+		HTTP::redirectTrustedURL($url);
 	}
 
 }
