@@ -10,11 +10,12 @@ use SimpleSAML\Utils\HTTP;
  *
  * @package SimpleSAMLphp
  */
-class Logout {
+class Logout
+{
 
-	public static function postLogout(SimpleSAML_IdP $idp, array $state) {
+	public static function postLogout(SimpleSAML_IdP $idp, array $state)
+	{
 		$url = Module::getModuleURL('attributeselection/logout_completed.php');
 		HTTP::redirectTrustedURL($url);
 	}
-
 }

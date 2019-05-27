@@ -29,7 +29,7 @@ $id = $_REQUEST['StateId'];
 $state = SimpleSAML_Auth_State::loadState($id, 'attributeselection:request');
 if (array_key_exists('attributeSelection', $_REQUEST)) {
     $userData = json_decode($_REQUEST['attributeSelection'], true);
-    foreach($userData as $name => $value) {
+    foreach ($userData as $name => $value) {
         if (!empty($value)) {
             $currentAttributes = $state['Attributes'][$name];
             SimpleSAML_Logger::debug('AttributeSelection - attributeselection: currentAttributes=' . var_export($currentAttributes, true));
@@ -61,7 +61,7 @@ $attributes = $state['Attributes'];
 $selectattributes = $state['attributeselection:selectattributes'];
 $selectattributes = array_keys($selectattributes);
 // Remove attributes that are not required to select value(s)
-foreach ($attributes AS $attrkey => $attrval) {
+foreach ($attributes as $attrkey => $attrval) {
     if (!in_array($attrkey, $selectattributes)) {
         unset($attributes[$attrkey]);
         continue;
@@ -92,7 +92,7 @@ if (array_key_exists('privacypolicy', $state['Destination'])) {
 if ($privacypolicy !== false) {
     $privacypolicy = str_replace(
         '%SPENTITYID%',
-        urlencode($spentityid), 
+        urlencode($spentityid),
         $privacypolicy
     );
 }
