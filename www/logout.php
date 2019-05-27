@@ -10,7 +10,7 @@ if (!array_key_exists('StateId', $_GET)) {
 }
 $state = SimpleSAML\Auth\State::loadState($_GET['StateId'], 'attributeselection:request');
 
-$state['Responder'] = ['sspmod_attributeselection_Logout', 'postLogout'];
+$state['Responder'] = ['SimpleSAML\Module\attributeselection\Logout', 'postLogout'];
 
 $idp = SimpleSAML\IdP::getByState($state);
 $idp->handleLogoutRequest($state, NULL);
