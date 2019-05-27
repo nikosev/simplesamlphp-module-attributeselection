@@ -130,7 +130,7 @@ if ($this->data['sppp'] !== false) {
 /**
  * Recursive attribute array listing function
  *
- * @param SimpleSAML_XHTML_Template $t          Template object
+ * @param SimpleSAML\XHTML\Template $t          Template object
  * @param array                     $attributes Attributes to be presented
  * @param string                    $nameParent Name of parent element
  *
@@ -217,6 +217,6 @@ echo '<h3 id="attributeheader">' . $this->t('{attributeselection:attributeselect
 	'IDPNAME' => $srcName
 )) . '</h3>';
 echo present_attributes($this, $attributes, $selectattributes, '');
-echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML_Module::getModuleURL('attributeselection/resources/js/jquery-3.3.1.slim.min.js')) . "\"></script>";
-echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML_Module::getModuleURL('attributeselection/resources/js/attributeselector.js')) . "\"></script>";
+echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/jquery-3.3.1.slim.min.js')) . "\"></script>";
+echo "<script type=\"text/javascript\" src=\"" . htmlspecialchars(SimpleSAML\Module::getModuleURL('attributeselection/resources/js/attributeselector.js')) . "\"></script>";
 $this->includeAtTemplateBase('includes/footer.php');

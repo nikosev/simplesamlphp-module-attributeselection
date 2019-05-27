@@ -13,7 +13,7 @@ use SimpleSAML\Utils\HTTP;
 class Logout
 {
 
-	public static function postLogout(SimpleSAML_IdP $idp, array $state)
+	public static function postLogout(SimpleSAML\IdP $idp, array $state)
 	{
 		$url = Module::getModuleURL('attributeselection/logout_completed.php');
 		HTTP::redirectTrustedURL($url);

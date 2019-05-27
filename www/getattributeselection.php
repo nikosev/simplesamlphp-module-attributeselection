@@ -18,24 +18,24 @@
  * so this is just to make sure.
  */
 session_cache_limiter('nocache');
-$globalConfig = SimpleSAML_Configuration::getInstance();
-SimpleSAML_Logger::info('AttributeSelection - attributeselection: Accessing attribute selection interface');
+$globalConfig = SimpleSAML\Configuration::getInstance();
+SimpleSAML\Logger::info('AttributeSelection - attributeselection: Accessing attribute selection interface');
 if (!array_key_exists('StateId', $_REQUEST)) {
-    throw new SimpleSAML_Error_BadRequest(
+    throw new SimpleSAML\Error\BadRequest(
         'Missing required StateId query parameter.'
     );
 }
 $id = $_REQUEST['StateId'];
-$state = SimpleSAML_Auth_State::loadState($id, 'attributeselection:request');
+$state = SimpleSAML\Auth\State::loadState($id, 'attributeselection:request');
 if (array_key_exists('attributeSelection', $_REQUEST)) {
     $userData = json_decode($_REQUEST['attributeSelection'], true);
     foreach ($userData as $name => $value) {
         if (!empty($value)) {
             $currentAttributes = $state['Attributes'][$name];
-            SimpleSAML_Logger::debug('AttributeSelection - attributeselection: currentAttributes=' . var_export($currentAttributes, true));
-            SimpleSAML_Logger::debug('AttributeSelection - attributeselection: attributeSelection=' . var_export($valuesReseted, true));
+            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: currentAttributes=' . var_export($currentAttributes, true));
+            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: attributeSelection=' . var_export($valuesReseted, true));
             $state['Attributes'][$name] = array_values(array_intersect($currentAttributes, $value));
-            SimpleSAML_Logger::debug('AttributeSelection - attributeselection: array_intersect=' . var_export(array_intersect($currentAttributes, $value), true));
+            SimpleSAML\Logger::debug('AttributeSelection - attributeselection: array_intersect=' . var_export(array_intersect($currentAttributes, $value), true));
         } else {
             unset($state['Attributes'][$name]);
         }
@@ -53,8 +53,8 @@ if (array_key_exists('yes', $_REQUEST)) {
     if (isset($state['Destination']['entityid'])) {
         $statsInfo['spEntityID'] = $state['Destination']['entityid'];
     }
-    SimpleSAML_Stats::log('attributeSelection:accept', $statsInfo);
-    SimpleSAML_Auth_ProcessingChain::resumeProcessing($state);
+    SimpleSAML\Stats::log('attributeSelection:accept', $statsInfo);
+    SimpleSAML\Auth\ProcessingChain::resumeProcessing($state);
 }
 // Prepare attributes for presentation
 $attributes = $state['Attributes'];
@@ -71,14 +71,14 @@ $para = array(
     'attributes' => &$attributes
 );
 // Reorder attributes according to attributepresentation hooks
-SimpleSAML_Module::callHooks('attributepresentation', $para);
+SimpleSAML\Module::callHooks('attributepresentation', $para);
 // Make, populate and layout attribute selection form
-$t = new SimpleSAML_XHTML_Template($globalConfig, 'attributeselection:attributeselectionform.php');
+$t = new SimpleSAML\XHTML\Template($globalConfig, 'attributeselection:attributeselectionform.php');
 $t->data['srcMetadata'] = $state['Source'];
 $t->data['dstMetadata'] = $state['Destination'];
-$t->data['yesTarget'] = SimpleSAML_Module::getModuleURL('attributeselection/getattributeselection.php');
+$t->data['yesTarget'] = SimpleSAML\Module::getModuleURL('attributeselection/getattributeselection.php');
 $t->data['yesData'] = array('StateId' => $id);
-$t->data['noTarget'] = SimpleSAML_Module::getModuleURL('attributeselection/noattributeselection.php');
+$t->data['noTarget'] = SimpleSAML\Module::getModuleURL('attributeselection/noattributeselection.php');
 $t->data['noData'] = array('StateId' => $id);
 $t->data['attributes'] = $attributes;
 // Fetch privacypolicy
